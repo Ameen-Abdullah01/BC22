@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Your own server",
+            "request": "launch",
+            "type": "al",
+            "environmentType":"OnPrem",
+          // "environmentName": "Leemarch_Sandbox_2022",
+            "server": "http://localhost",
+            "serverInstance": "BC220",
+            "authentication": "Windows",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "breakOnError": "All",
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            //"port": 7049,
+            "tenant": "default",
+            "usePublicURLFromServer": true,
+            "schemaUpdateMode":"ForceSync"
+        }
+    ]
+}
