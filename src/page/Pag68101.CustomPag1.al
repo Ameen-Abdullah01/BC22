@@ -51,6 +51,40 @@ page 68101 CustomPag1
 
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action("Record Reference")
+            {
+                ApplicationArea = All;
+
+                trigger OnAction()
+                begin
+                    RecordRefernce(18);
+                end;
+            }
+        }
+    }
+
+    local procedure RecordRefernce(TableNum: Integer)
+    var
+        Recref: RecordRef;
+        Recref2: RecordRef;
+        fieldRefernce: FieldRef;
+        fieldReference2: FieldRef;
+        RecId: RecordId;
+    begin
+        Recref.Open(TableNum);
+        fieldRefernce := Recref.Field(1);
+        fieldRefernce.Value := '30000';
+        if Recref.Find('=') then begin
+            RecId := Recref.RecordId;
+            Recref2.Get(RecId);
+            fieldReference2 := Recref.Field(3);
+            Message('%1', fieldReference2.Value);
+        end
+    end;
 
 
 
