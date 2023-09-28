@@ -17,38 +17,85 @@ report 68110 "Live Task"
             column(Salesperson_Code; "Salesperson Code") { } //Rep
             column(Responsibility_Center; "Responsibility Center") { } //SalesManager--Mgr
             column(Posting_Date; "Posting Date") { } //Rec Creation date
-            column(Amount; Amount) { } //for MTD, LMTD , MTD var
+            column(MTD; MTD) { } //start of month to the refrence date
+            column(LMTD; LMTD) { } //previous year od MTD
+            column(MTDVar; MTDVar) { } //difference between MTD and LMTD
+            dataitem("Sales Invoice Line"; "Sales Invoice Line")
+            {
+                DataItemLink = "Document No." = field("No.");
+                column(Shipment_Date; "Shipment Date") { }
+                column(Amount; Amount) { }
+                column(UserDate; UserDate) { }
+            }
+            trigger OnAfterGetRecord()
+            begin
+                MTDProc();
+                LMTDProc();
+                LMTDVarProc();
+            end;
         }
     }
 
-    // requestpage
-    // {
-    //     layout
-    //     {
-    //         area(Content)
-    //         {
-    //             group(GroupName)
-    //             {
-    //                 field(Name; SourceExpression)
-    //                 {
-    //                     ApplicationArea = All;
+    requestpage
+    {
+        layout
+        {
+            area(Content)
+            {
+                group("Input Here")
+                {
+                    field(UserDate; UserDate)
+                    {
+                        ApplicationArea = All;
 
-    //                 }
-    //             }
-    //         }
-    //     }
+                    }
+                }
+            }
+        }
+    }
 
-    //     actions
-    //     {
-    //         area(processing)
-    //         {
-    //             action(ActionName)
-    //             {
-    //                 ApplicationArea = All;
+    local procedure MTDProc() //Procedure for MTD
+    var
+        SumOfAmt: Decimal;
+    begin
+        ResDate := CalcDate('-CM', UserDate);
+        MTD := 0.0;
+        "Sales Invoice Line".SetFilter("Posting Date", '%1..%2', ResDate, UserDate);
+        if "Sales Invoice Line".FindSet() then
+            repeat
+                MTD += "Sales Invoice Line".Amount;
+            until "Sales Invoice line".Next() = 0;
+    end;
 
-    //             }
-    //         }
-    //     }
-    // }
+    local procedure LMTDProc() //Procedure for LMTD
+    var
+        SumOfAmt: Decimal;
+    begin
+        LMTDUser := CalcDate('CD-1Y', UserDate);
+        LMTDRes := CalcDate('-CM', LMTDUser);
+        LMTD := 0.0;
+        "Sales Invoice Line".SetFilter("Posting Date", '%1..%2', LMTDRes, LMTDUser);
+        if "Sales Invoice Line".FindSet() then begin
+            repeat
+                LMTD += "Sales Invoice Line".Amount;
+            until "Sales Invoice Line".Next() = 0;
+        end
+    end;
 
+    local procedure LMTDVarProc() //Procedure for LMTD Var
+    var
+        DiffOfAmt: Decimal;
+    begin
+        DiffOfAmt := MTD - LMTD;
+        MTDVar := DiffOfAmt;
+    end;
+
+    var
+        UserDate: Date;
+        MTD: Decimal;
+        LMTD: Decimal;
+        MTDVar: Decimal;
+        ResDate: Date;
+        LMTDUser: Date;
+        LMTDRes: Date;
 }

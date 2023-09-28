@@ -60,7 +60,8 @@ page 68111 "Update Action Page"
                             Fref := RecRef.Field(Rec."Field No.");
                             Text := Fref.Value;
                             exit(true);
-                        end
+                        end;
+                        RecRef.Close();
                     end;
                 }
                 field("New Value"; Rec."New Value")
