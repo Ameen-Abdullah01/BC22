@@ -59,12 +59,13 @@ report 68110 "Live Task"
         SumOfAmt: Decimal;
     begin
         ResDate := CalcDate('-CM', UserDate);
-        MTD := 0.0;
         "Sales Invoice Line".SetFilter("Posting Date", '%1..%2', ResDate, UserDate);
         if "Sales Invoice Line".FindSet() then
             repeat
                 MTD += "Sales Invoice Line".Amount;
-            until "Sales Invoice line".Next() = 0;
+            until "Sales Invoice line".Next() = 0
+        else
+            MTD := 0;
     end;
 
     local procedure LMTDProc() //Procedure for LMTD
@@ -73,13 +74,13 @@ report 68110 "Live Task"
     begin
         LMTDUser := CalcDate('CD-1Y', UserDate);
         LMTDRes := CalcDate('-CM', LMTDUser);
-        LMTD := 0.0;
         "Sales Invoice Line".SetFilter("Posting Date", '%1..%2', LMTDRes, LMTDUser);
-        if "Sales Invoice Line".FindSet() then begin
+        if "Sales Invoice Line".FindSet() then
             repeat
                 LMTD += "Sales Invoice Line".Amount;
-            until "Sales Invoice Line".Next() = 0;
-        end
+            until "Sales Invoice Line".Next() = 0
+        else
+            LMTD := 0;
     end;
 
     local procedure LMTDVarProc() //Procedure for LMTD Var
