@@ -65,7 +65,7 @@
                                               <Paragraph>
                                                 <TextRuns>
                                                   <TextRun>
-                                                    <Value>=IIF(Fields!Quantities.Value = 0 , "*" + Fields!No_.Value, IIF(Fields!Quantities1.Value = 0 , "**" + Fields!No_.Value, Fields!No_.Value))</Value>
+                                                    <Value>=IIF(Fields!Quantities.Value = 0 , "*  " + Fields!No_.Value, IIF(Fields!Quantities1.Value = 0 , "**  " + Fields!No_.Value, Fields!No_.Value))</Value>
                                                     <Style>
                                                       <FontSize>9pt</FontSize>
                                                     </Style>
