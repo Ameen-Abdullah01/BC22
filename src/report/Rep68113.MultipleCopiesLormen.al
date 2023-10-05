@@ -1,4 +1,4 @@
-report 68113 "Multiple copies Lormen"
+report 68113 "Multiple copies Loremen"
 {
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
@@ -28,12 +28,19 @@ report 68113 "Multiple copies Lormen"
                     column(TotalPair; "Purch. Rcpt. Line".Quantity) { }
                     column(LineNum; "Purch. Rcpt. Line"."Line No.") { }
                     column(DocumentNum; "Purch. Rcpt. Line"."Document No.") { }
+                    column(LineAmount; LineAmount) { }
+                    column(AmtInclVAT; AmtInclVAT) { }
+                    column(LineDiscountAmt; LineDiscountAmt) { }
+                    column(VATPercent; VATPercent) { }
+                    column(TotalVat; TotalVat) { }
                     column(Vname; Vname) { }
                     column(VNum; VNum) { }
                     column(VAddr; VAddr) { }
                     column(VCity; VCity) { }
                     column(VPhone; VPhone) { }
                     column(Total; Total) { }
+                    column(OutputNo; OutputNo) { }
+                    column(SumQuantity; SumQuantity) { }
 
                     dataitem("Purch. Rcpt. Line"; "Purch. Rcpt. Line")
                     {
@@ -53,7 +60,7 @@ report 68113 "Multiple copies Lormen"
 
                 trigger OnPreDataItem();
                 begin
-                    NoOfLoops := ABS(NoOfCopies) + 1;
+                    NoOfLoops := ABS(NoOfCopies) + 2;
                     CopyText := '';
                     SETRANGE(Number, 1, NoOfLoops);
                     OutputNo := 1;
@@ -72,7 +79,22 @@ report 68113 "Multiple copies Lormen"
                     VNum := Vend."No.";
                     VAddr := Vend.Address;
                     VPhone := Vend."Phone No.";
-                end
+                end;
+                PurchInvoiceHeader.Reset();
+                PurchInvoiceHeader.SetRange("Order No.", "Purch. Rcpt. Header"."Order No.");
+                if PurchInvoiceHeader.FindSet() then begin
+                    PurchInvoiceLine.Reset();
+                    PurchInvoiceLine.SetRange("Document No.", PurchInvoiceHeader."No.");
+                    if PurchInvoiceLine.FindSet() then
+                        repeat
+                            LineAmount += PurchInvoiceLine."Line Amount";
+                            SumQuantity += PurchInvoiceLine.Quantity;
+                            AmtInclVAT := PurchInvoiceLine."Amount Including VAT";
+                            LineDiscountAmt := PurchInvoiceLine."Line Discount Amount";
+                            VATPercent := PurchInvoiceLine."VAT %";
+                            TotalVat := LineAmount + AmtInclVAT;
+                        until PurchInvoiceLine.Next() = 0;
+                end;
 
             end;
         }
@@ -110,4 +132,12 @@ report 68113 "Multiple copies Lormen"
         VCity: Text[30];
         VAddr: Text[100];
         VPhone: Text[30];
+        PurchInvoiceHeader: Record "Purch. Inv. Header";
+        PurchInvoiceLine: Record "Purch. Inv. Line";
+        LineAmount: Decimal;
+        AmtInclVAT: Decimal;
+        LineDiscountAmt: Decimal;
+        VATPercent: Decimal;
+        TotalVat: Decimal;
+        SumQuantity: Decimal;
 }
