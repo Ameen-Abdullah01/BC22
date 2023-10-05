@@ -1,4 +1,4 @@
-report 68113 "Multiple copies Lormen"
+report 68113 "Multiple copies Loremen"
 {
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
@@ -20,6 +20,11 @@ report 68113 "Multiple copies Lormen"
                     column(CurrencyCode; "Purch. Rcpt. Header"."Currency Code") { }
                     column(OrderNum; "Purch. Rcpt. Header"."Order No.") { }
                     column(VATRegNum; "Purch. Rcpt. Header"."VAT Registration No.") { }
+                    column(VNum; "Purch. Rcpt. Header"."Buy-from Vendor No.") { }
+                    column(VName; "Purch. Rcpt. Header"."Buy-from Vendor Name") { }
+                    column(VPhone; "Purch. Rcpt. Header"."Buy-from Contact No.") { }
+                    column(VAddr; "Purch. Rcpt. Header"."Buy-from Address") { }
+                    column(VCity; "Purch. Rcpt. Header"."Buy-from City") { }
                     column(ItemNum; "Purch. Rcpt. Line"."No.") { }
                     column(Description; "Purch. Rcpt. Line".Description) { }
                     column(Quantity; "Purch. Rcpt. Line".Quantity) { }
@@ -28,12 +33,14 @@ report 68113 "Multiple copies Lormen"
                     column(TotalPair; "Purch. Rcpt. Line".Quantity) { }
                     column(LineNum; "Purch. Rcpt. Line"."Line No.") { }
                     column(DocumentNum; "Purch. Rcpt. Line"."Document No.") { }
-                    column(Vname; Vname) { }
-                    column(VNum; VNum) { }
-                    column(VAddr; VAddr) { }
-                    column(VCity; VCity) { }
-                    column(VPhone; VPhone) { }
+                    column(LineAmount; LineAmount) { }
+                    column(AmtInclVAT; AmtInclVAT) { }
+                    column(LineDiscountAmt; LineDiscountAmt) { }
+                    column(VATPercent; VATPercent) { }
+                    column(TotalVat; TotalVat) { }
                     column(Total; Total) { }
+                    column(OutputNo; OutputNo) { }
+                    column(SumQuantity; SumQuantity) { }
 
                     dataitem("Purch. Rcpt. Line"; "Purch. Rcpt. Line")
                     {
@@ -53,7 +60,7 @@ report 68113 "Multiple copies Lormen"
 
                 trigger OnPreDataItem();
                 begin
-                    NoOfLoops := ABS(NoOfCopies) + 1;
+                    NoOfLoops := ABS(NoOfCopies) + 2;
                     CopyText := '';
                     SETRANGE(Number, 1, NoOfLoops);
                     OutputNo := 1;
@@ -62,17 +69,21 @@ report 68113 "Multiple copies Lormen"
             }
             trigger OnAfterGetRecord()
             begin
-                Clear(Vname);
-                Clear(VNum);
-                Clear(VAddr);
-                Clear(VCity);
-                Clear(VPhone);
-                if Vend.Get("Purch. Rcpt. Header"."Buy-from Vendor No.") then begin
-                    Vname := Vend.Name;
-                    VNum := Vend."No.";
-                    VAddr := Vend.Address;
-                    VPhone := Vend."Phone No.";
-                end
+                PurchInvoiceHeader.Reset();
+                PurchInvoiceHeader.SetRange("Order No.", "Purch. Rcpt. Header"."Order No.");
+                if PurchInvoiceHeader.FindSet() then begin
+                    PurchInvoiceLine.Reset();
+                    PurchInvoiceLine.SetRange("Document No.", PurchInvoiceHeader."No.");
+                    if PurchInvoiceLine.FindSet() then
+                        repeat
+                            LineAmount += PurchInvoiceLine."Line Amount";
+                            SumQuantity += PurchInvoiceLine.Quantity;
+                            AmtInclVAT := PurchInvoiceLine."Amount Including VAT";
+                            LineDiscountAmt := PurchInvoiceLine."Line Discount Amount";
+                            VATPercent := PurchInvoiceLine."VAT %";
+                            TotalVat := LineAmount + AmtInclVAT;
+                        until PurchInvoiceLine.Next() = 0;
+                end;
 
             end;
         }
@@ -104,10 +115,12 @@ report 68113 "Multiple copies Lormen"
         OutputNo: Integer;
         FormatDocument: Codeunit "Format Document";
         Total: Decimal;
-        Vend: Record Vendor;
-        Vname: Text[100];
-        VNum: Code[20];
-        VCity: Text[30];
-        VAddr: Text[100];
-        VPhone: Text[30];
+        PurchInvoiceHeader: Record "Purch. Inv. Header";
+        PurchInvoiceLine: Record "Purch. Inv. Line";
+        LineAmount: Decimal;
+        AmtInclVAT: Decimal;
+        LineDiscountAmt: Decimal;
+        VATPercent: Decimal;
+        TotalVat: Decimal;
+        SumQuantity: Decimal;
 }
