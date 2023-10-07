@@ -47,17 +47,15 @@ report 68114 "Item Label Copies"
                     trigger OnPreDataItem();
                     begin
                         if "Sales Line".Type = "Sales Line".Type::Item then begin
-                            NoOfLoops := ABS(NoOfCopies) + 2;
-                            CopyText := '';
-                            SETRANGE(Number, 1, NoOfLoops);
-                            OutputNo := 1;
+                            Num := 2;
                         end
                         else begin
-                            NoOfLoops := ABS(NoOfCopies) + 1;
-                            CopyText := '';
-                            SETRANGE(Number, 1, NoOfLoops);
-                            OutputNo := 1;
+                            Num := 1;
                         end;
+                        NoOfLoops := ABS(NoOfCopies) + Num;
+                        CopyText := '';
+                        SETRANGE(Number, 1, NoOfLoops);
+                        OutputNo := 1;
                     end;
 
                 }
@@ -115,4 +113,5 @@ report 68114 "Item Label Copies"
         UnitMeasure: Record "Item Unit of Measure";
 
         Weight: Decimal;
+        Num: Integer;
 }
