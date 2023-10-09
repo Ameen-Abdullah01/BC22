@@ -41,12 +41,16 @@ report 68112 "Loremen Report"
                     ItemLE.Reset();
                     ItemLE.SetRange("Item No.", "Purch. Inv. Line"."No.");
                     if ItemLE.FindSet() then
-                        repeat
-                            if (ItemLE."Location Code" = 'YELLOW') then
-                                Quantities += ItemLE.Quantity;
-                            if ((ItemLE."Location Code" = 'YELLOW') or (ItemLE."Location Code" = '')) then
-                                Quantities1 += ItemLE.Quantity;
-                        until ItemLE.Next() = 0;
+                        // repeat
+                        if (ItemLE."Location Code" = 'YELLOW') then
+                            // Quantities += ItemLE.Quantity;
+                            ItemLE.CalcSums(Quantity);
+                    Quantities := Quantity;
+                    if ((ItemLE."Location Code" = 'YELLOW') or (ItemLE."Location Code" = '')) then
+                        //Quantities1 += ItemLE.Quantity;
+                        //until ItemLE.Next() = 0;
+                    ItemLE.CalcSums(Quantity);
+                    Quantities1 := Quantity;
                 end;
             }
             trigger OnAfterGetRecord()
