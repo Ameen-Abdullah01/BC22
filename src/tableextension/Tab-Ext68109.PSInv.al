@@ -1,4 +1,4 @@
-tableextension 68109 PSInv extends "Sales Invoice Header"
+tableextension 68116 PSInv extends "Sales Invoice Header"
 {
     fields
     {
@@ -13,6 +13,10 @@ tableextension 68109 PSInv extends "Sales Invoice Header"
             FieldClass = FlowField;
             CalcFormula = count("Sales Invoice Line" where("Document No." = field("No."), Type = filter(Item)));
         }
+        // field(68116; "Total Amount"; Decimal)
+        // {
+        //     DataClassification = ToBeClassified;
+        // }
 
     }
 

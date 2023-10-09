@@ -31,12 +31,8 @@ report 68115 "VAT Entry"
                 trigger OnAfterGetRecord()
                 begin
                     Clear(CustName);
-                    SalesHeader.Reset();
-                    SalesHeader.SetRange("Sell-to Customer No.", "VAT Entry"."Bill-to/Pay-to No.");
-                    if SalesHeader.FindSet() then
-                        repeat
-                            CustName := SalesHeader."Sell-to Customer Name";
-                        until SalesHeader.Next() = 0;
+                    if SalesInvHeader.Get("VAT Entry"."Document No.") then
+                        CustName := SalesInvHeader."Sell-to Customer Name";
                 end;
             }
         }
@@ -73,7 +69,7 @@ report 68115 "VAT Entry"
     end;
 
     var
-        SalesHeader: Record "Sales Header";
+        SalesInvHeader: Record "Sales Invoice Header";
         "Print Summary": Boolean;
         "Print Detail": Boolean;
         CustName: Text[100];
