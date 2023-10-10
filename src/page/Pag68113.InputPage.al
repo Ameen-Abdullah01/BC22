@@ -46,8 +46,6 @@ page 68113 "Input Page"
     end;
 
     local procedure GetcontrolCaption(TableID: Integer)
-    var
-        myInt: Integer;
     begin
         I := 1;
         Fieldrec.Reset();
