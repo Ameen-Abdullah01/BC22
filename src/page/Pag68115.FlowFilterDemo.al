@@ -28,7 +28,21 @@ page 68115 "Flowfilter Impl. Page"
                 {
                     ToolTip = 'Specifies the value of the Shipped Amount field.';
                 }
+                field("Sum"; Rec."Sum")
+                {
+                    ToolTip = 'Specifies the value of the Sum field.';
+                }
+                field(DAmt; Rec.DAmt)
+                {
+                    ToolTip = 'Specifies the value of the Filtered On Date field.';
+                }
             }
+
         }
+
     }
+    trigger OnAfterGetRecord()
+    begin
+        Rec.Sum := Rec.Amount + Rec.SAmount;
+    end;
 }

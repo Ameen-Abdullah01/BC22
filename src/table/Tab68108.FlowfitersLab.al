@@ -29,16 +29,30 @@ table 68108 "FlowFilters Implementation"
             CalcFormula = sum("Sales Line".Amount where("Document No." = field("No."),
                                                         Type = const(Item),
                                                         "Location Code" = field(Loc),
-                                                        "Quantity Shipped" = filter(<> 0)));
+                                                        "Quantity Shipped" = filter(< 10)));
         }
-        field(5; Loc; Code[10])
+        field(5; DAmt; Decimal)
+        {
+            Caption = 'Filtered On Date';
+            FieldClass = FlowField;
+            CalcFormula = sum("Sales Line".Amount where("Document No." = field("No."),
+                                                    Type = const(Item),
+                                                    "Quantity Invoiced" = filter(<> 7),
+                                                    "Posting Date" = field(DateFilter)));
+        }
+        field(6; Loc; Code[10])
         {
             FieldClass = FlowFilter;
             TableRelation = Location;
         }
-        field(6; Sum; Decimal)
+        field(7; Sum; Decimal)
         {
             DataClassification = ToBeClassified;
+        }
+        field(8; DateFilter; Date)
+        {
+            FieldClass = FlowFilter;
+            TableRelation = "Sales Line"."Posting Date";
         }
 
     }
