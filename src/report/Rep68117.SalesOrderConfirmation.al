@@ -18,12 +18,6 @@ report 68117 "Sales Order Confirmation"
                     dataitem(PageLoop; "Integer")
                     {
                         DataItemTableView = SORTING(Number) WHERE(Number = CONST(1));
-                        column(ItemNum; "Sales Line"."No.") { }
-                        column(Revision; "Sales Line"."Variant Code") { }
-                        column(Description; "Sales Line".Description) { }
-                        column(Quantity; "Sales Line".Quantity) { }
-                        column(Rate; "Sales Line"."Unit Price") { }
-                        column(Amount; "Sales Line"."Line Amount") { }
                         column(JobNum; "Sales Header"."No.") { }
                         column(PO_No; "Sales Header"."External Document No.") { }
                         column(Rep; "Sales Header"."Responsibility Center") { }
@@ -34,7 +28,6 @@ report 68117 "Sales Order Confirmation"
                         column(Ship_to_City; "Sales Header"."Ship-to City") { }
                         column(Ship_to_County; "Sales Header"."Ship-to County") { }
                         column(Ship_to_PostCode; "Sales Header"."Ship-to Post Code") { }
-
                         column(Bill_to_Name; "Sales Header"."Bill-to Name") { }
                         column(Bill_to_Addr; "Sales Header"."Bill-to Address") { }
                         column(Bill_to_City; "Sales Header"."Bill-to City") { }
@@ -42,18 +35,27 @@ report 68117 "Sales Order Confirmation"
                         column(Bill_to_PostCode; "Sales Header"."Bill-to Post Code") { }
                         column(Bill_to_Addr2; "Sales Header"."Bill-to Address 2") { }
                         column(Ship_to_Addr2; "Sales Header"."Ship-to Address 2") { }
-
                         column(OrderDate; "Sales Header"."Order Date") { }
                         column(SalesOrderNo; "Sales Header"."No.") { }
+
                         column(OrderNoBarcode; OrderNoBarcode) { }
+
+                        column(ItemNum; "Sales Line"."No.") { }
+                        column(Revision; "Sales Line"."Variant Code") { }
+                        column(Description; "Sales Line".Description) { }
+                        column(Quantity; "Sales Line".Quantity) { }
+                        column(Rate; "Sales Line"."Unit Price") { }
+                        column(Amount; "Sales Line"."Line Amount") { }
                         column(LineAmt; "Sales Line"."Line Amount") { }
                         column(ItemType; "Sales Line".Type) { }
                         column(AmtInclVAT; "Sales Line"."Amount Including VAT") { }
-                        column(OutputNo; OutputNo) { }
                         column(LineNum; "Sales Line"."Line No.") { }
                         column(DocNum; "Sales Line"."Document No.") { }
                         column(Promised_Del_Date; "Sales Line"."Promised Delivery Date") { }
                         column(UM; "Sales Line"."Unit of Measure") { }
+
+                        column(OutputNo; OutputNo) { }
+
                         column(Sell_To_Country; Sell_To_Country) { }
                         column(Bill_To_Country; Bill_To_Country) { }
                     }
@@ -67,8 +69,7 @@ report 68117 "Sales Order Confirmation"
 
                     trigger OnPreDataItem();
                     begin
-                        Num := 1;
-                        NoOfLoops := ABS(NoOfCopies) + Num;
+                        NoOfLoops := ABS(NoOfCopies) + 1;
                         CopyText := '';
                         SETRANGE(Number, 1, NoOfLoops);
                         OutputNo := 1;
@@ -108,7 +109,7 @@ report 68117 "Sales Order Confirmation"
                 {
                     field(NoOfCopies; NoOfCopies)
                     {
-
+                        ApplicationArea = All;
                     }
                 }
             }
@@ -121,7 +122,6 @@ report 68117 "Sales Order Confirmation"
         CopyText: Text[30];
         OutputNo: Integer;
         FormatDocument: Codeunit "Format Document";
-        Num: Integer;
         BarcodeFontProvider: Interface "Barcode Font Provider";
         BarcodeSymbology: Enum "Barcode Symbology";
         BarcodeString: Code[20];

@@ -48,7 +48,7 @@ page 68112 DatesExercise
 
     local procedure Resultant_Date(var UserIn: Date)
     begin
-        Res := CalcDate('-CM', UserIn);
+        Res := CalcDate('CY-1Y', UserIn);
         Res1 := CalcDate('CD-3Y', UserIn);
         Res2 := CalcDate('CD-3Y+1W', UserIn);
         Res3 := CalcDate('CD+3Y+152W', UserIn);
