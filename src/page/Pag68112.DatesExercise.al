@@ -56,7 +56,7 @@ page 68112 DatesExercise
         // Message(Format(Res1, 0, '<day,2>-<month,2>-<year4>'));
         // Message(Format(Res2, 0, '<day,2>-<month,2>-<year4>'));
         // Message(Format(Res3, 0, '<day,2>-<month,2>-<year4>'));
-        StartDte1 := CalcDate('CD+1D', DueDte);
+        StartDte1 := CalcDate('CD-1Y-CM', DueDte);
         EndDte1 := CalcDate('CD+1M', DueDte);
         EndDte2 := CalcDate('CD-30D', DueDte);
         StartDte3 := CalcDate('CD-31D', DueDte);
