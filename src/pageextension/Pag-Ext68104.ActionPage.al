@@ -11,11 +11,11 @@ pageextension 68104 ActionPage extends "Purchase Order"
                 action("TJX Label")
                 {
                     ApplicationArea = All;
-                    trigger OnAction()
-                    begin
-                        CurrPage.SetSelectionFilter(PurchHeader);
-                        Report.Run(50104, true, false, PurchHeader);
-                    end;
+                    // trigger OnAction()
+                    // begin
+                    //     CurrPage.SetSelectionFilter(PurchHeader);
+                    //     Report.Run(50104, true, false, PurchHeader);
+                    // end;
 
 
                 }
