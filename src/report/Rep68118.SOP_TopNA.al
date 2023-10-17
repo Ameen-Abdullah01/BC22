@@ -17,15 +17,22 @@ report 68118 "SOP Top Natl. Acc"
             column(MTDvar; MTDvar) { }
             column(YTD; YTD) { }
             column(LYTD; LYTD) { }
+            column(FinalMTD; FinalMTD) { }
+            column(FinalLYMTD; FinalLYMTD) { }
+            column(FinalYTD; FinalYTD) { }
+            column(FinalLYTD; FinalLYTD) { }
+            column(FinalLYR; FinalLYR) { }
             column(LYR; LYR) { }
             column(Openorders; Openorders) { }
             column(Selection; Selection) { }
+            column(UserDate; UserDate) { }
             column(Posting_Date; "Posting Date") { }
             column(Sell_to_Customer_No_; "Sell-to Customer No.") { }
             trigger OnAfterGetRecord()
             begin
                 StandardProc();
                 Clear(Openorders);
+                SalesHeader.Reset();
                 SalesHeader.SetRange("Sell-to Customer No.", "Sales Invoice Header"."Sell-to Customer No.");
                 SalesHeader.SetRange("Responsibility Center", "Sales Invoice Header"."Responsibility Center");
                 SalesHeader.SetRange("Salesperson Code", "Sales Invoice Header"."Salesperson Code");
@@ -91,6 +98,7 @@ report 68118 "SOP Top Natl. Acc"
         SalesInvLine.SetRange("Document No.", "Sales Invoice Header"."No.");
         SalesInvLine.SetRange("Sell-to Customer No.", "Sales Invoice Header"."Sell-to Customer No.");
         SalesInvLine.SetRange("Responsibility Center", "Sales Invoice Header"."Responsibility Center");
+
         SalesInvLine.SetRange("Posting Date", arr[1, 1], UserDate);
         if SalesInvLine.FindSet() then begin
             SalesInvLine.CalcSums("Amount Including VAT");
@@ -170,11 +178,8 @@ report 68118 "SOP Top Natl. Acc"
         SalesInvHeader: Record "Sales Invoice Header";
         SalesInvLine: Record "Sales Invoice Line";
         Openorders: Decimal;
-        SalesCrMemoHead: Record "Sales Cr.Memo Header";
         SalesCrMemoLine: Record "Sales Cr.Memo Line";
         arr: array[20, 10] of Date;
-        CrMemoPostingDate: Date;
         UserDate: Date;
         SalesHeader: Record "Sales Header";
-        SalesLine: Record "Sales Line";
 }

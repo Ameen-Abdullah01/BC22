@@ -14,6 +14,15 @@ tableextension 68101 CustomerEx extends Customer
         {
             DataClassification = ToBeClassified;
         }
+        field(68119; PaymentCollectionMethod; Option)
+        {
+            DataClassification = ToBeClassified;
+            OptionMembers = Monthly,Weekly,Biweekly,Annually;
+        }
+        field(68120; TestForEvent; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     var
