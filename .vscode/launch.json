@@ -11,7 +11,7 @@
             "serverInstance": "BC220",
             "authentication": "Windows",
             "port": 7049,
-            "startupObjectId": 1382,
+            "startupObjectId": 42,
             "startupObjectType": "Page",
             // "startupObjectId": 68112,
             // "startupObjectType": "Page",
