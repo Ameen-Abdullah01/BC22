@@ -36,4 +36,27 @@ codeunit 68110 CustTemplateMgt
         Report.Run(68104, true, false, Rec);
     end;
 
+    // [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeValidateType', '', true, true)]
+    // local procedure OnBeforeValidateTypeHandler(var SalesLine: Record "Sales Line"; xSalesLine: Record "Sales Line"; CurrentFieldNo: Integer; var IsHandled: Boolean)
+    // begin
+    //     if not IsHandled then
+    //         if salesline.Get(SalesLine."Document Type", SalesLine."Document No.", SalesLine."Line No.") then
+    //             repeat
+    //                 SalesLine.SONO := SalesLine."Document No.";
+    //                 SalesLine.SONOLineNum := SalesLine."Line No.";
+    //                 SalesLine.Modify();
+    //             until salesline.Next() = 0;
+
+    // end;
+
+    // [EventSubscriber(ObjectType::Table, Database::"Option Lookup Buffer", 'OnCreateNewOnBeforeInsert', '', true, true)]
+    // local procedure OnCreateNewOnBeforeInsertHandler(LookupType: Enum "Option Lookup Type")
+    // var
+    //     Rec: Record "Sales Line";
+    // begin
+    //     Message(Format(Rec."Line No."));
+    // end;
+
+
+
 }
