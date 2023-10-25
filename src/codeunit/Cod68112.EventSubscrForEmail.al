@@ -62,6 +62,21 @@ codeunit 50110 EventSubscriberCU
 
     end;
 
+
+    // [EventSubscriber(ObjectType::Table, Database::"Document Sending Profile", 'OnAfterSendToEMail', '', true, true)]
+    // local procedure OnAfterSendToEMailHandler(DocName: Text[150]; DocNo: Code[20]; DocNoFieldNo: Integer; RecordVariant: Variant; ReportUsage: Enum "Report Selection Usage"; ShowDialog: Boolean; ToCust: Code[20]; var DocumentSendingProfile: Record "Document Sending Profile")
+    // begin
+    //     Message('Hi');
+    //     SalesOrders.AGTPostandSendEmail(DocNo);
+
+    // end;
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Document-Mailing", 'OnBeforeSendEmail', '', false, false)]
+    local procedure OnBeforeSendEmailHandler(EmailDocName: Text[250]; EmailScenario: Enum "Email Scenario"; SenderUserID: Code[50]; var EmailSentSuccesfully: Boolean; var HideDialog: Boolean; var IsFromPostedDoc: Boolean; var IsHandled: Boolean; var PostedDocNo: Code[20]; var ReportUsage: Integer; var TempEmailItem: Record "Email Item" temporary)
+    begin
+        SalesOrders.AGTPostandSendEmail(PostedDocNo);
+        IsHandled := true;
+    end;
+
     var
         SalesOrders: Page "Sales Order";
 
