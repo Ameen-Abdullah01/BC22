@@ -19,7 +19,19 @@ page 68116 AttachmentFunctionality
                 {
                     ApplicationArea = All;
                 }
-                field("Bill-to Address"; Rec."Bill-to Address")
+                field("City"; Rec."Bill-to City")
+                {
+                    ApplicationArea = All;
+                }
+                field("County"; Rec."Bill-to County")
+                {
+                    ApplicationArea = All;
+                }
+                field("Country"; Rec."Bill-to Country/Region Code")
+                {
+                    ApplicationArea = All;
+                }
+                field("Salesperson Code"; Rec."Salesperson Code")
                 {
                     ApplicationArea = All;
                 }
