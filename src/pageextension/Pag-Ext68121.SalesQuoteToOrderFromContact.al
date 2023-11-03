@@ -28,7 +28,4 @@ pageextension 68121 SalesQuoteToOrderFromContact extends "Contact Card"
             }
         }
     }
-
-    var
-        myInt: Integer;
 }

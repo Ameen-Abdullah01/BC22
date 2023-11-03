@@ -53,6 +53,10 @@ page 68116 AttachmentFunctionality
                               "No." = FIELD("No."),
                               "Document Type" = FIELD("Document Type");
             }
+            systempart(Notes; Notes)
+            {
+                ApplicationArea = All;
+            }
         }
     }
     actions
@@ -77,7 +81,52 @@ page 68116 AttachmentFunctionality
                     DocumentAttachmentDetails.RunModal();
                 end;
             }
+            action(AddNotes)
+            {
+                ApplicationArea = All;
+                Caption = 'Add Notes';
+                Image = Notes;
+                Promoted = true;
+                PromotedCategory = Process;
+                trigger OnAction()
+                var
+                    RecordLink: Record "Record Link";
+                    RecordLinkMgt: Codeunit "Record Link Management";
+                    Note: Text[100];
+                begin
+                    LastLinkID := RecordLink.Count;
+                    GetLastLinkID();
+                    for RecordLink."Link ID" := 1 to LastLinkID do begin
+                        LastLinkID += 1;
+                        RecordLink.Init();
+                        RecordLink."Link ID" := LastLinkID;
+                        RecordLink.Insert();
+                        RecordLink.Type := RecordLink.Type::Note;
+                        RecordLink."User ID" := UserId;
+                        RecordLink.Company := CompanyName;
+                        RecordLink.Created := CurrentDateTime;
+                        RecordLink."Record ID" := Rec.RecordId;
+                        RecordLinkMgt.WriteNote(RecordLink, 'This is AGT Testing');
+                        RecordLink.Modify();
+                    end;
+
+                end;
+            }
         }
 
     }
+    local procedure GetLastLinkID()
+    var
+        RecordLink: Record "Record Link";
+    begin
+        RecordLink.Reset();
+        if RecordLink.FindLast() then
+            LastLinkID := RecordLink."Link ID"
+        else
+            LastLinkID := 0;
+    end;
+
+    var
+        LastLinkID: Integer;
+        RecLinkMgt: Codeunit "Record Link Management";
 }

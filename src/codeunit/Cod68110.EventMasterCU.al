@@ -56,6 +56,17 @@ codeunit 68110 CustTemplateMgt
     // begin
     //     Message(Format(Rec."Line No."));
     // end;
+    // [EventSubscriber(ObjectType::Table, Database::"Record Link", 'OnBeforeInsertEvent', '', true, true)]
+
+
+    // local procedure OnBeforeInsertEventHandler(var Rec: Record "Record Link")
+    // begin
+    //     RecLinkMgt.WriteNote(Rec, 'This is Test Message');
+    // end;
+
+    var
+        RecLinkMgt: Codeunit "Record Link Management";
+        RC: Record "Record Link";
 
 
 
