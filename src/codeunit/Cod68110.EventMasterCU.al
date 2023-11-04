@@ -63,6 +63,30 @@ codeunit 68110 CustTemplateMgt
     // begin
     //     RecLinkMgt.WriteNote(Rec, 'This is Test Message');
     // end;
+    // [EventSubscriber(ObjectType::Table, Database::"Gen. Journal Line", 'OnAfterValidateEvent', 'VAT %', true, true)]
+    // local procedure OnAfterValidateEventHandler(var Rec: Record "Gen. Journal Line")
+    // var
+    //     TaxAmt: Decimal;
+    //     PurchLine: Record "Purch. Inv. Line";
+    //     Temp: Decimal;
+    // begin
+    //     Clear(TaxAmt);
+    //     Clear(Temp);
+    //     PurchLine.Reset();
+    //     PurchLine.SetRange("Document No.", Rec."Document No.");
+    //     if PurchLine.FindSet() then
+    //         repeat
+    //             if PurchLine."VAT %" <> 0 then begin
+    //                 TaxAmt := (PurchLine."VAT %" / 100) * (PurchLine.Quantity * PurchLine."Direct Unit Cost");
+    //                 Temp := TaxAmt + (PurchLine.Quantity * PurchLine."Direct Unit Cost");
+    //                 Rec.Total += Temp;
+    //             end
+    //             else begin
+    //                 Temp := (PurchLine.Quantity * PurchLine."Direct Unit Cost");
+    //                 Rec.Total += Temp;
+    //             end;
+    //         until PurchLine.Next() = 0;
+    // end;
 
     var
         RecLinkMgt: Codeunit "Record Link Management";

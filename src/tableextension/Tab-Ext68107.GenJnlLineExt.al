@@ -10,7 +10,10 @@ tableextension 68107 "GenJnlLineExt" extends "Gen. Journal Line"
         {
             DataClassification = ToBeClassified;
         }
-
+        field(68111; Totals; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     var

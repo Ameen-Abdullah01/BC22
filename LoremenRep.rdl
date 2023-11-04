@@ -1729,6 +1729,9 @@ WsGy857sGhbFrtr0k2Nr23E25lRkmzfJ8khfJRxkkkk3dxO881bUQVD8WmS7W+hxe933lL4ll3B8Uwtm
         <Field Name="Total">
           <DataField>Total</DataField>
         </Field>
+        <Field Name="TotalFormat">
+          <DataField>TotalFormat</DataField>
+        </Field>
         <Field Name="Line_No_">
           <DataField>Line_No_</DataField>
         </Field>
