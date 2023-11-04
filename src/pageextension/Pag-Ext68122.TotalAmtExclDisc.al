@@ -22,8 +22,4 @@ pageextension 68122 AmtExclDisc extends "Posted Purch. Invoice Subform"
             Rec.Total := (Rec.Quantity * Rec."Direct Unit Cost");
     end;
 
-
-
-    var
-        myInt: Integer;
 }
