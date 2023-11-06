@@ -27,14 +27,14 @@ codeunit 68110 CustTemplateMgt
         CustomerFromTemplate(Customer, CustomerTempl);
     end;
 
-    [EventSubscriber(ObjectType::Page, Page::"Purchase Order", 'OnAfterActionEvent', 'TJX Label', false, false)]
-    local procedure OnAfterActionEvent(var Rec: Record "Purchase Header")
-    var
-        PurchaseOrder: Page "Purchase Order";
-    begin
-        PurchaseOrder.SetSelectionFilter(Rec);
-        Report.Run(68104, true, false, Rec);
-    end;
+    // [EventSubscriber(ObjectType::Page, Page::"Purchase Order", 'OnAfterActionEvent', 'TJX Label', false, false)]
+    // local procedure OnAfterActionEvent(var Rec: Record "Purchase Header")
+    // var
+    //     PurchaseOrder: Page "Purchase Order";
+    // begin
+    //     PurchaseOrder.SetSelectionFilter(Rec);
+    //     Report.Run(68104, true, false, Rec);
+    // end;
 
     // [EventSubscriber(ObjectType::Table, Database::"Sales Line", 'OnBeforeValidateType', '', true, true)]
     // local procedure OnBeforeValidateTypeHandler(var SalesLine: Record "Sales Line"; xSalesLine: Record "Sales Line"; CurrentFieldNo: Integer; var IsHandled: Boolean)
