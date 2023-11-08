@@ -113,7 +113,7 @@ page 68116 AttachmentFunctionality
 
                 end;
             }
-            action(ImportNotesFMExcel)
+            action(ImportNotes_Excel)
             {
                 Caption = 'Import Notes From Excel';
                 ApplicationArea = All;
@@ -215,7 +215,6 @@ page 68116 AttachmentFunctionality
                     repeat
                         TempExcelBuffer.NewRow();
                         TempExcelBuffer.AddColumn(SH."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                        // TempExcelBuffer.AddColumn(SH.Description, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         RecordLink.CalcFields(Note);
                         TempExcelBuffer.AddColumn(RecordLinkMgt.ReadNote(RecordLink), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         TempExcelBuffer.AddColumn(RecordLink.Created, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);

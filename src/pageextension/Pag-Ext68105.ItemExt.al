@@ -1,8 +1,24 @@
-pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
+pageextension 68105 ItemExt extends "Item Card"
 {
+    layout
+    {
+        addafter(Type)
+        {
+            field(Status; Rec.Status)
+            {
+                ApplicationArea = All;
+                Editable = false;
+            }
+            field(Reason; Rec.Reason)
+            {
+                ApplicationArea = All;
+                MultiLine = true;
+            }
+        }
+    }
     actions
     {
-        addafter("F&unctions")
+        addafter(ApplyTemplate)
         {
             group(Migration)
             {
@@ -33,8 +49,36 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
                 }
             }
         }
-    }
+        addafter(ApplyTemplate)
+        {
+            action(Rejection)
+            {
+                ApplicationArea = All;
+                Image = Reject;
+                Promoted = true;
+                PromotedCategory = Process;
 
+                trigger OnAction()
+                begin
+                    if StdDialog.RunModal() = Action::LookupOK then begin
+                        TestProc();
+                    end;
+                    Rec.Status := Rec.Status::Rejected;
+                end;
+            }
+            action(Approved)
+            {
+                ApplicationArea = All;
+                Image = Approval;
+                Promoted = true;
+                PromotedCategory = Process;
+                trigger OnAction()
+                begin
+                    Rec.Status := Rec.Status::Approved;
+                end;
+            }
+        }
+    }
     local procedure GetLastLinkID()
     var
         RecordLink: Record "Record Link";
@@ -54,7 +98,7 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
         MaxRowNo: Integer;
         RecordLink: Record "Record Link";
         RecordLinkMgt: Codeunit "Record Link Management";
-        SH: Record "Sales Header";
+        Item: Record Item;
     begin
         RowNo := 0;
         ColNo := 0;
@@ -75,8 +119,8 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
             RecordLink.Created := CurrentDateTime;
             RecordLink."User ID" := UserId;
 
-            SH.Get(SH."Document Type"::Order, GetValueAtCell(RowNo, 1));
-            RecordLink."Record ID" := SH.RecordId;
+            Item.Get(GetValueAtCell(RowNo, 1));
+            RecordLink."Record ID" := Item.RecordId;
             RecordLinkMgt.WriteNote(RecordLink, GetValueAtCell(RowNo, 2));
             RecordLink.Modify();
 
@@ -85,7 +129,7 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
     end;
 
 
-    local procedure ExportNotesToExcel(var SH: Record "Sales Header")
+    local procedure ExportNotesToExcel(var Item: Record Item)
     var
         TempExcelBuffer: Record "Excel Buffer" temporary;
         NotesLbl: Label 'Notes';
@@ -96,11 +140,11 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
         TempExcelBuffer.Reset();
         TempExcelBuffer.DeleteAll();
         TempExcelBuffer.NewRow();
-        TempExcelBuffer.AddColumn(SH.FieldCaption("No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(Item.FieldCaption("No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Note), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Created), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn(RecordLink.FieldCaption("User ID"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        if SH.FindSet() then
+        if Item.FindSet() then
             repeat
                 RecordLink.Reset();
                 RecordLink.SetRange("Record ID", Rec.RecordId);
@@ -108,13 +152,13 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
                 if RecordLink.FindSet() then
                     repeat
                         TempExcelBuffer.NewRow();
-                        TempExcelBuffer.AddColumn(SH."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBuffer.AddColumn(Item."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         RecordLink.CalcFields(Note);
                         TempExcelBuffer.AddColumn(RecordLinkMgt.ReadNote(RecordLink), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         TempExcelBuffer.AddColumn(RecordLink.Created, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         TempExcelBuffer.AddColumn(RecordLink."User ID", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                     until RecordLink.Next() = 0;
-            until SH.Next() = 0;
+            until Item.Next() = 0;
         TempExcelBuffer.CreateNewBook(NotesLbl);
         TempExcelBuffer.WriteSheet(NotesLbl, CompanyName, UserId);
         TempExcelBuffer.CloseBook();
@@ -149,49 +193,26 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
             exit('');
     end;
 
-    procedure AGTPostandSendEmail(pstInvNo: Code[50])
-
+    procedure TestProc()
     var
-        Email: Codeunit Email;
-        EmailMessage: Codeunit "Email Message";
-        TempBlob: Codeunit "Temp Blob";
-        InStr: InStream;
-        SendTo: Text;
-        Outstr: OutStream;
-        Reportparameter: Text;
-        XmlParameters: Text;
-        recRef: RecordRef;
-        FileName: Text;
-        E_Mail: Text;
-        salesinvhea: Record "Sales Invoice Header";
-        reportSelection: Record "Report Selections";
+        ItemVar: Record Item;
     begin
-        TempBlob.CreateOutStream(Outstr);
-        TempBlob.CreateInStream(InStr);
-        salesinvhea.Reset();
-        salesinvhea.SetRange("No.", pstInvNo);
-        if salesinvhea.FindFirst() then;
-        recRef.GetTable(salesinvhea);
-        //reportSelection.GET(reportSelection.Usage::"S.Order", 2);
-        Report.SaveAs(Report::"Standard Sales - Invoice", XmlParameters, ReportFormat::Pdf, Outstr, recRef);
-        FileName := ('Sales invoice - ' + salesinvhea."No.") + '.pdf';
-        EmailMessage.Create(salesinvhea."Sell-to E-Mail", '', '', true);
-        E_Mail := '<h1>Order Confirmation</h1> <h2>Hello ' + salesinvhea."Sell-to Customer Name" + ' </h2> <br> <p>Thank you for your business. Your order confirmation is attached to this message.</p>  ';
-        EmailMessage.AppendToBody(E_Mail);
-        EmailMessage.SetSubject('Order Confirmation');
-        EmailMessage.AddAttachment(FileName, 'PDF', InStr);
-        Email.OpenInEditor(EmailMessage, Enum::"Email Scenario"::Default);
-
+        ItemVar.Reset();
+        ItemVar.SetRange(Reasons, Rec.Reasons);
+        if ItemVar.FindSet() then
+            repeat
+                Rec.Validate(Reasons, ItemVar.Reasons);
+                Rec.Modify(true);
+            until ItemVar.Next() = 0;
     end;
 
+
     var
-        reportSelection: Record "Report Selections";
-        DocMail: Codeunit "Document-Mailing";
         LastLinkID: Integer;
         RecLinkMgt: Codeunit "Record Link Management";
         TempExcelBuffer: Record "Excel Buffer" temporary;
         UploadExcelMsg: Label 'Please Choose the Excel file.';
         NoFileFoundMsg: Label 'No Excel file found!';
         ExcelImportSucess: Label 'Excel is successfully imported.';
-
+        StdDialog: Page ReasonPage;
 }

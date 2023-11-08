@@ -79,5 +79,6 @@ codeunit 50110 EventSubscriberCU
 
     var
         SalesOrders: Page "Sales Order";
+        PurchaseOrders: Page "Purchase Order";
 
 }

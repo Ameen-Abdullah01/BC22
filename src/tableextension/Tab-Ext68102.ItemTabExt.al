@@ -1,18 +1,19 @@
-tableextension 68107 "GenJnlLineExt" extends "Gen. Journal Line"
+tableextension 68102 ItemTabExt extends Item
 {
     fields
     {
-        field(68109; "No. of Item Lines"; Integer)
+        field(68103; Status; Enum ItemsEnum)
         {
             DataClassification = ToBeClassified;
         }
-        field(68110; Test_field; Integer)
+        field(68104; Reasons; Text[150])
         {
             DataClassification = ToBeClassified;
         }
-        field(68111; Totals; Decimal)
+        field(68105; Reason; Text[150])
         {
             DataClassification = ToBeClassified;
         }
     }
+
 }
