@@ -76,9 +76,11 @@ pageextension 68105 ItemExt extends "Item Card"
                 trigger OnAction()
                 begin
                     if StdDialog.RunModal() = Action::LookupOK then begin
-                        TestProc();
+                        //TestProc();
+                        Rec.Reasons := Rec.Reason;
                     end;
                     Rec.Status := Rec.Status::Rejected;
+                    Rec.Reasons := Rec.Reason;
                 end;
             }
             action(Approved)
@@ -213,7 +215,8 @@ pageextension 68105 ItemExt extends "Item Card"
         ItemVar: Record Item;
     begin
         ItemVar.Reset();
-        ItemVar.SetRange(Reasons, Rec.Reasons);
+        ItemVar.SetRange("No.", Rec."No.");
+        //ItemVar.SetRange(Reasons, Rec.Reasons);
         if ItemVar.FindSet() then
             repeat
                 Rec.Validate(Reasons, ItemVar.Reasons);

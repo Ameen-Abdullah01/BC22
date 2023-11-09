@@ -13,5 +13,11 @@ codeunit 68103 MyEvents
 
     end;
 
+    [EventSubscriber(ObjectType::Page, Page::"Purchase Order Subform", 'OnBeforeValidateEvent', 'Location Code', true, true)]
+    local procedure OnBeforeValidateEventHandler(var Rec: Record "Purchase Line")
+    begin
+
+    end;
+
 
 }

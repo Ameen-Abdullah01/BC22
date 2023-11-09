@@ -15,6 +15,13 @@ pageextension 68119 SalesLineExt extends "Sales Order Subform"
                 Caption = 'SO Line No.';
             }
         }
+        modify("No.")//for default location
+        {
+            trigger OnAfterValidate()
+            begin
+                CurrPage.Update(true);
+            end;
+        }
 
     }
     trigger OnAfterGetRecord()
@@ -23,11 +30,11 @@ pageextension 68119 SalesLineExt extends "Sales Order Subform"
     begin
         if salesline.Get(Rec."Document Type", Rec."Document No.", Rec."Line No.") then
             repeat
-                Rec.SONO := Rec."Document No.";
-                Rec.SONOLineNum := Rec."Line No.";
+                // Rec.SONO := Rec."Document No.";
+                // Rec.SONOLineNum := Rec."Line No.";
+                Rec."Location Code" := 'MAIN'; // for default location AGT_AA_110923
                 Rec.Modify();
             until salesline.Next() = 0;
-
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)
