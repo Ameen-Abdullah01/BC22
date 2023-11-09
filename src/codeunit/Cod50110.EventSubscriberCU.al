@@ -73,7 +73,15 @@ codeunit 50110 EventSubscriberCU
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Document-Mailing", 'OnBeforeSendEmail', '', false, false)]
     local procedure OnBeforeSendEmailHandler(EmailDocName: Text[250]; EmailScenario: Enum "Email Scenario"; SenderUserID: Code[50]; var EmailSentSuccesfully: Boolean; var HideDialog: Boolean; var IsFromPostedDoc: Boolean; var IsHandled: Boolean; var PostedDocNo: Code[20]; var ReportUsage: Integer; var TempEmailItem: Record "Email Item" temporary)
     begin
+        IsHandled := true;
         SalesOrders.AGTPostandSendEmail(PostedDocNo);
+
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Document-Mailing", 'OnBeforeEmailFileInternal', '', true, true)]
+    local procedure OnBeforeEmailFileInternal(var PostedDocNo: Code[20]; var IsHandled: Boolean)
+    begin
+        PurchaseOrders.EmailForPurchaseOrders(PostedDocNo);
         IsHandled := true;
     end;
 

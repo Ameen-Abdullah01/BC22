@@ -150,6 +150,55 @@ pageextension 68104 ActionPage extends "Purchase Order"
             exit('');
     end;
 
+    procedure EmailForPurchaseOrders(PurchOrdNo: Code[50])
+
+    var
+        Email: Codeunit Email;
+        EmailMessage: Codeunit "Email Message";
+        TempBlob: Codeunit "Temp Blob";
+        InStr: InStream;
+        SendTo: Text;
+        Outstr: OutStream;
+        Reportparameter: Text;
+        XmlParameters: Text;
+        recRef: RecordRef;
+        FileName: Text;
+        E_Mail: Text;
+        PurchHeader: Record "Purchase Header";
+        reportSelection: Record "Report Selections";
+        RecipientType: Enum "Email Recipient Type";
+        PurchPaySetup: Record "Purchases & Payables Setup";
+        Contacts: Record Contact;
+        Contact_EMail: Text[80];
+    begin
+        TempBlob.CreateOutStream(Outstr);
+        TempBlob.CreateInStream(InStr);
+
+
+        PurchHeader.Reset();
+        PurchHeader.SetRange("No.", PurchOrdNo);
+        if PurchHeader.FindFirst() then;
+        recRef.GetTable(PurchHeader);
+        Report.SaveAs(Report::"Standard Purchase - Order", XmlParameters, ReportFormat::Pdf, Outstr, recRef);
+        FileName := ('Purch. Order - ' + PurchHeader."No.") + '.pdf';
+
+        Contacts.Reset();
+        Contacts.SetRange("No.", PurchHeader."Pay-to Contact No.");  //PurchHeader already has the Current Doc Number.
+        if Contacts.FindFirst() then
+            Contact_EMail := Contacts."E-Mail";
+
+        EmailMessage.Create(Contact_EMail, '', '', true);
+        E_Mail := '<h1><b>Order Confirmation</b></h1> <h2>Hello ' + PurchHeader."Pay-to Name" + ' </h2> <br> <p>This is AGT Testing</p>  ';
+        EmailMessage.AppendToBody(E_Mail);
+        EmailMessage.SetSubject('Order Confirmation -' + PurchHeader."No.");
+
+        PurchPaySetup.Get();
+        EmailMessage.SetRecipients(RecipientType::Bcc, PurchPaySetup.CompanyEmail);//AA_110823
+        EmailMessage.AddAttachment(FileName, 'PDF', InStr);
+        Email.OpenInEditor(EmailMessage, Enum::"Email Scenario"::Default);
+
+    end;
+
     var
         LastLinkID: Integer;
         RecLinkMgt: Codeunit "Record Link Management";

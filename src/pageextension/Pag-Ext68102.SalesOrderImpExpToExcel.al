@@ -166,6 +166,7 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
         salesinvhea: Record "Sales Invoice Header";
         reportSelection: Record "Report Selections";
         RecipientType: Enum "Email Recipient Type";
+        PurchPaySetup: Record "Purchases & Payables Setup";
     begin
         TempBlob.CreateOutStream(Outstr);
         TempBlob.CreateInStream(InStr);
@@ -173,14 +174,14 @@ pageextension 68102 "SalesOrderImpExpToExcel" extends "Sales Order"
         salesinvhea.SetRange("No.", pstInvNo);
         if salesinvhea.FindFirst() then;
         recRef.GetTable(salesinvhea);
-        //reportSelection.GET(reportSelection.Usage::"S.Order", 2);
         Report.SaveAs(Report::"Standard Sales - Invoice", XmlParameters, ReportFormat::Pdf, Outstr, recRef);
         FileName := ('Sales invoice - ' + salesinvhea."No.") + '.pdf';
         EmailMessage.Create(salesinvhea."Sell-to E-Mail", '', '', true);
         E_Mail := '<h1>Order Confirmation</h1> <h2>Hello ' + salesinvhea."Sell-to Customer Name" + ' </h2> <br> <p>Thank you for your business. Your order confirmation is attached to this message.</p>  ';
         EmailMessage.AppendToBody(E_Mail);
         EmailMessage.SetSubject('Order Confirmation');
-        EmailMessage.AddRecipient(RecipientType::Bcc, 'introabdullah2001@gmail.com');
+        PurchPaySetup.Get();
+        EmailMessage.SetRecipients(RecipientType::Bcc, PurchPaySetup.CompanyEmail);//AA_110823
         EmailMessage.AddAttachment(FileName, 'PDF', InStr);
         Email.OpenInEditor(EmailMessage, Enum::"Email Scenario"::Default);
 
