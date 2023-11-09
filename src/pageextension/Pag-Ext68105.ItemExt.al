@@ -15,6 +15,21 @@ pageextension 68105 ItemExt extends "Item Card"
                 MultiLine = true;
             }
         }
+        addafter("Vendor No.")
+        {
+            field(VendorName; Rec.VendorName)
+            {
+                ApplicationArea = All;
+                Caption = 'Vendor Name';
+            }
+        }
+        modify("Vendor No.")
+        {
+            trigger OnAfterValidate()
+            begin
+                CurrPage.Update(true);
+            end;
+        }
     }
     actions
     {

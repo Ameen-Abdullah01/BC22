@@ -1,5 +1,16 @@
 pageextension 68112 "Item Export Xml" extends "Item List"
 {
+    layout
+    {
+        addafter("Vendor No.")
+        {
+            field(VendorName; Rec.VendorName)
+            {
+                ApplicationArea = All;
+                Caption = 'Vendor Name';
+            }
+        }
+    }
     actions
     {
         addafter(History)
@@ -31,5 +42,6 @@ pageextension 68112 "Item Export Xml" extends "Item List"
                 end;
             }
         }
+
     }
 }

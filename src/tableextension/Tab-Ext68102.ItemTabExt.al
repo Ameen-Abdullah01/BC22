@@ -14,6 +14,11 @@ tableextension 68102 ItemTabExt extends Item
         {
             DataClassification = ToBeClassified;
         }
+        field(68106; VendorName; Text[100])
+        {
+            FieldClass = FlowField;
+            CalcFormula = lookup(Vendor.Name where("No." = field("Vendor No.")));
+        }
     }
 
 }
