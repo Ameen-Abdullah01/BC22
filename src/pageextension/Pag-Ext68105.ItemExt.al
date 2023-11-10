@@ -15,6 +15,15 @@ pageextension 68105 ItemExt extends "Item Card"
                 MultiLine = true;
             }
         }
+        addafter(Inventory)
+        {
+            field(QtyAvailable; Rec.QtyAvailable)
+            {
+                ApplicationArea = All;
+                Caption = 'Qty Available';
+                Editable = false;
+            }
+        }
         addafter("Vendor No.")
         {
             field(VendorName; Rec.VendorName)

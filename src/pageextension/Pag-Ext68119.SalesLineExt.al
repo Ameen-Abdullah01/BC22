@@ -32,7 +32,7 @@ pageextension 68119 SalesLineExt extends "Sales Order Subform"
             repeat
                 // Rec.SONO := Rec."Document No.";
                 // Rec.SONOLineNum := Rec."Line No.";
-                Rec."Location Code" := 'MAIN'; // for default location AGT_AA_110923
+                Rec."Location Code" := 'BLUE'; // for default location AGT_AA_110923
                 Rec.Modify();
             until salesline.Next() = 0;
     end;

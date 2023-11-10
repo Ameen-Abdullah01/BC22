@@ -16,14 +16,9 @@ pageextension 68125 PurchOrderSubExt extends "Purchase Order Subform"
     begin
         if PurchLine.Get(Rec."Document Type", Rec."Document No.", Rec."Line No.") then
             repeat
-                Rec."Location Code" := 'MAIN'; // for default location AGT_AA_110923
-                Rec.Modify();
+                Rec."Location Code" := 'BLUE'; // for default location AGT_AA_110923
             until PurchLine.Next() = 0;
     end;
-
-    var
-        myInt: Integer;
-
 
 }
 

@@ -10,6 +10,14 @@ pageextension 68112 "Item Export Xml" extends "Item List"
                 Caption = 'Vendor Name';
             }
         }
+        addafter(Type)
+        {
+            field(QtyAvailable; Rec.QtyAvailable)
+            {
+                ApplicationArea = All;
+                Caption = 'Qty Available';
+            }
+        }
     }
     actions
     {
@@ -44,4 +52,30 @@ pageextension 68112 "Item Export Xml" extends "Item List"
         }
 
     }
+    trigger OnAfterGetRecord()
+    var
+        ProdOrdersLines: Record "Prod. Order Line";
+        ProdOrderQuantity: Decimal;
+        SalesOrderQty: Decimal;
+        SalesLine: Record "Sales Line";
+    begin
+        ProdOrderQuantity := 0;
+        SalesOrderQty := 0;
+
+        ProdOrdersLines.Reset();
+        ProdOrdersLines.SetRange("Item No.", Rec."No.");
+        if ProdOrdersLines.FindSet() then
+            repeat
+                ProdOrderQuantity += ProdOrdersLines.Quantity;
+            until ProdOrdersLines.Next() = 0;
+
+        SalesLine.Reset();
+        SalesLine.SetRange("No.", Rec."No.");
+        if SalesLine.FindSet() then
+            repeat
+                SalesOrderQty += SalesLine.Quantity;
+            until SalesLine.Next() = 0;
+
+        Rec.QtyAvailable := Rec.Inventory - SalesOrderQty - ProdOrderQuantity;
+    end;
 }

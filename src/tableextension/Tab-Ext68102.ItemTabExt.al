@@ -19,6 +19,11 @@ tableextension 68102 ItemTabExt extends Item
             FieldClass = FlowField;
             CalcFormula = lookup(Vendor.Name where("No." = field("Vendor No.")));
         }
+        field(68107; QtyAvailable; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            DecimalPlaces = 0;
+        }
     }
 
 }
