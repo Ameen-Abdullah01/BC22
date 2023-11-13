@@ -83,13 +83,11 @@ pageextension 68105 ItemExt extends "Item Card"
                 PromotedCategory = Process;
 
                 trigger OnAction()
+                var
+                    StdDialog: Page ReasonPage;
                 begin
-                    if StdDialog.RunModal() = Action::LookupOK then begin
-                        //TestProc();
-                        Rec.Reasons := Rec.Reason;
-                    end;
-                    Rec.Status := Rec.Status::Rejected;
-                    Rec.Reasons := Rec.Reason;
+
+                    Page.RunModal(68118, Rec)
                 end;
             }
             action(Approved)
@@ -241,5 +239,5 @@ pageextension 68105 ItemExt extends "Item Card"
         UploadExcelMsg: Label 'Please Choose the Excel file.';
         NoFileFoundMsg: Label 'No Excel file found!';
         ExcelImportSucess: Label 'Excel is successfully imported.';
-        StdDialog: Page ReasonPage;
+
 }

@@ -17,6 +17,12 @@ page 68118 ReasonPage
                     ApplicationArea = All;
                     Caption = 'Specify Reason';
                     MultiLine = true;
+                    trigger OnValidate()
+                    var
+                        myInt: Integer;
+                    begin
+
+                    end;
                 }
             }
         }
