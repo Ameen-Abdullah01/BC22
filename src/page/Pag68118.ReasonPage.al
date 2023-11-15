@@ -18,8 +18,6 @@ page 68118 ReasonPage
                     Caption = 'Specify Reason';
                     MultiLine = true;
                     trigger OnValidate()
-                    var
-                        myInt: Integer;
                     begin
 
                     end;
@@ -27,4 +25,6 @@ page 68118 ReasonPage
             }
         }
     }
+    var
+        ResVar: Text[150];
 }
