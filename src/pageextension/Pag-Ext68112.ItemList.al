@@ -66,6 +66,19 @@ pageextension 68112 "Item Export Xml" extends "Item List"
                     ImportNotesFromExcel();
                 end;
             }
+            action(ImportLinksFMExcel)
+            {
+                Caption = 'Import Links From Excel';
+                ApplicationArea = All;
+                Promoted = true;
+                PromotedCategory = Process;
+                Image = Import;
+                trigger OnAction()
+                begin
+                    ReadExcelSheet();
+                    ImportLinksFromExcel();
+                end;
+            }
             action(ExportNotesToExcel)
             {
                 Caption = 'Export Notes to Excel';
@@ -76,6 +89,18 @@ pageextension 68112 "Item Export Xml" extends "Item List"
                 trigger OnAction()
                 begin
                     ExportNotesToExcel(Rec);
+                end;
+            }
+            action(ExportLinkstoExcel)
+            {
+                Caption = 'Export Links to Excel';
+                ApplicationArea = All;
+                Promoted = true;
+                PromotedCategory = Process;
+                Image = Export;
+                trigger OnAction()
+                begin
+                    ExportLinksToExcel(Rec);
                 end;
             }
         }
@@ -159,6 +184,45 @@ pageextension 68112 "Item Export Xml" extends "Item List"
         Message(ExcelImportSucess);
     end;
 
+    local procedure ImportLinksFromExcel()
+    var
+        RowNo: Integer;
+        ColNo: Integer;
+        LineNo: Integer;
+        MaxRowNo: Integer;
+        RecordLink: Record "Record Link";
+        RecordLinkMgt: Codeunit "Record Link Management";
+        Item: Record Item;
+    begin
+        RowNo := 0;
+        ColNo := 0;
+        MaxRowNo := 0;
+        LineNo := 0;
+        TempExcelBuffer.Reset();
+        if TempExcelBuffer.FindLast() then
+            MaxRowNo := TempExcelBuffer."Row No.";
+        LastLinkID := 0;
+        GetLastLinkID();
+        for RowNo := 2 to MaxRowNo do begin
+            LastLinkID += 1;
+            RecordLink.Init();
+            RecordLink."Link ID" := LastLinkID;
+            RecordLink.Insert();
+            RecordLink.Company := CompanyName;
+            RecordLink.Type := RecordLink.Type::Link;
+            RecordLink.Created := CurrentDateTime;
+            RecordLink."User ID" := UserId;
+
+            Item.Get(GetValueAtCell(RowNo, 1));
+            RecordLink."Record ID" := Item.RecordId;
+            Evaluate(RecordLink.URL1, GetValueAtCell(RowNo, 3));
+            Evaluate(RecordLink.Description, GetValueAtCell(RowNo, 4));
+            RecordLink.Modify();
+
+        end;
+        Message(ExcelImportSucess);
+    end;
+
 
     local procedure ExportNotesToExcel(var Item: Record Item)
     var
@@ -197,6 +261,48 @@ pageextension 68112 "Item Export Xml" extends "Item List"
         TempExcelBuffer.OpenExcel();
         Message('Data Exported to Excel Successfully!');
     end;
+
+    local procedure ExportLinksToExcel(var Item: Record Item)
+    var
+        TempExcelBuffer: Record "Excel Buffer" temporary;
+        LinksLbl: Label 'Links';
+        ExcelFileName: Label 'Links_%1_%2';
+        RecordLink: Record "Record Link";
+        RecordLinkMgt: Codeunit "Record Link Management";
+    begin
+        TempExcelBuffer.Reset();
+        TempExcelBuffer.DeleteAll();
+        TempExcelBuffer.NewRow();
+        TempExcelBuffer.AddColumn(Item.FieldCaption("No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(Item.FieldCaption(Description), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(URL1), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Description), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Created), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(RecordLink.FieldCaption("User ID"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        if Item.FindSet() then
+            repeat
+                RecordLink.Reset();
+                RecordLink.SetRange("Record ID", Rec.RecordId);
+                RecordLink.SetRange(Type, RecordLink.Type::Link);
+                if RecordLink.FindSet() then
+                    repeat
+                        TempExcelBuffer.NewRow();
+                        TempExcelBuffer.AddColumn(Item."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBuffer.AddColumn(Item."Description", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBuffer.AddColumn(RecordLink.URL1, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBuffer.AddColumn(RecordLink.Description, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBuffer.AddColumn(RecordLink.Created, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBuffer.AddColumn(RecordLink."User ID", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    until RecordLink.Next() = 0;
+            until Item.Next() = 0;
+        TempExcelBuffer.CreateNewBook(LinksLbl);
+        TempExcelBuffer.WriteSheet(LinksLbl, CompanyName, UserId);
+        TempExcelBuffer.CloseBook();
+        TempExcelBuffer.SetFriendlyFilename(StrSubstNo(ExcelFileName, CurrentDateTime, UserId));
+        TempExcelBuffer.OpenExcel();
+        Message('Data Exported to Excel Successfully!');
+    end;
+
 
     local procedure ReadExcelSheet()
     var
