@@ -129,16 +129,25 @@ pageextension 68101 CustomerExtPag extends "Customer Card"
         ExcelFileName: Label 'Notes_%1_%2';
         RecordLink: Record "Record Link";
         RecordLinkMgt: Codeunit "Record Link Management";
+        Note1: Variant;
+        Note2: Variant;
+        SplitTo: Integer;
+        DivValue: Integer;
+        ModValue: Integer;
+        i: Integer;
     begin
         TempExcelBuffer.Reset();
         TempExcelBuffer.DeleteAll();
         TempExcelBuffer.NewRow();
         TempExcelBuffer.AddColumn(Cust.FieldCaption("No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Note), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Created), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn(RecordLink.FieldCaption("User ID"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        // TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Note), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(Note2, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBuffer.AddColumn(Note1, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
         if Cust.FindSet() then
             repeat
+                Note1 := '';
+                Note2 := '';
+
                 RecordLink.Reset();
                 RecordLink.SetRange("Record ID", Rec.RecordId);
                 RecordLink.SetRange(Type, RecordLink.Type::Note);
@@ -147,9 +156,25 @@ pageextension 68101 CustomerExtPag extends "Customer Card"
                         TempExcelBuffer.NewRow();
                         TempExcelBuffer.AddColumn(Cust."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         RecordLink.CalcFields(Note);
-                        TempExcelBuffer.AddColumn(RecordLinkMgt.ReadNote(RecordLink), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                        TempExcelBuffer.AddColumn(RecordLink.Created, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                        TempExcelBuffer.AddColumn(RecordLink."User ID", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+
+
+                        Note1 := RecordLinkMgt.ReadNote(RecordLink);
+
+                        DivValue := StrLen(Note1) div 250;
+                        ModValue := StrLen(Note1) mod 250;
+                        if ModValue = 0 then
+                            SplitTo := DivValue
+                        else
+                            SplitTo := DivValue + 1;
+                        for i := 1 to SplitTo do begin
+                            Note2 := CopyStr(Note1, 1, 250);
+                            if StrLen(Note1) >= 251 then
+                                Note1 := CopyStr(Note1, 251, StrLen(Note1))
+                            else
+                                Note1 := '';
+                            TempExcelBuffer.AddColumn(Note2, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        end;
+                        TempExcelBuffer.AddColumn(Note1, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                     until RecordLink.Next() = 0;
             until Cust.Next() = 0;
         TempExcelBuffer.CreateNewBook(NotesLbl);

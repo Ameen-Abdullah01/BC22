@@ -112,6 +112,7 @@ pageextension 68112 "Item Export Xml" extends "Item List"
         ProdOrderQuantity: Decimal;
         SalesOrderQty: Decimal;
         SalesLine: Record "Sales Line";
+        NotesVar: Text[2048];
     begin
         ProdOrderQuantity := 0;
         SalesOrderQty := 0;
@@ -131,6 +132,8 @@ pageextension 68112 "Item Export Xml" extends "Item List"
             until SalesLine.Next() = 0;
 
         Rec.QtyAvailable := Rec.Inventory - SalesOrderQty - ProdOrderQuantity;
+
+
     end;
 
 

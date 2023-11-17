@@ -25,6 +25,14 @@ tableextension 68102 ItemTabExt extends Item
             DecimalPlaces = 0;
         }
     }
+    procedure GetNotes(): Text
+    var
+        TempBlob: Codeunit "Temp Blob";
+        TypeHelper: Codeunit "Type Helper";
+        Instream: InStream;
+    begin
+
+    end;
 
 
 }
