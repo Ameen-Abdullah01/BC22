@@ -36,7 +36,7 @@ table 68108 "FlowFilters Implementation"
             Caption = 'Filtered On Date';
             FieldClass = FlowField;
             CalcFormula = sum("Sales Line".Amount where("Document No." = field("No."),
-                                                    Type = const(Item),
+                                                    Type = const(item),
                                                     "Quantity Invoiced" = filter(<> 7),
                                                     "Posting Date" = field(DateFilter)));
         }

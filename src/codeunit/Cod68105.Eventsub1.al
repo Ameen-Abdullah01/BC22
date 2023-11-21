@@ -11,4 +11,12 @@ codeunit 68105 EventSub1
         Ishandled := true;
     end;
 
+    // [EventSubscriber(ObjectType::Page, Page::"BOM Structure", 'OnAfterGetRecordEvent', '', true, true)]
+    // local procedure OnAfterGetRecordEventHandler(var Rec: Record "BOM Buffer")
+    // begin
+
+    // end;
+
+    var
+        item: Record Item;
 }

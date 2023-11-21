@@ -108,34 +108,10 @@ pageextension 68112 "Item Export Xml" extends "Item List"
     }
     trigger OnAfterGetRecord()
     var
-        ProdOrdersLines: Record "Prod. Order Line";
-        ProdOrderQuantity: Decimal;
-        SalesOrderQty: Decimal;
-        SalesLine: Record "Sales Line";
-        NotesVar: Text[2048];
+        ProcdeureCU: Codeunit ProceduresCU;
     begin
-        ProdOrderQuantity := 0;
-        SalesOrderQty := 0;
-
-        ProdOrdersLines.Reset();
-        ProdOrdersLines.SetRange("Item No.", Rec."No.");
-        if ProdOrdersLines.FindSet() then
-            repeat
-                ProdOrderQuantity += ProdOrdersLines.Quantity;
-            until ProdOrdersLines.Next() = 0;
-
-        SalesLine.Reset();
-        SalesLine.SetRange("No.", Rec."No.");
-        if SalesLine.FindSet() then
-            repeat
-                SalesOrderQty += SalesLine.Quantity;
-            until SalesLine.Next() = 0;
-
-        Rec.QtyAvailable := Rec.Inventory - SalesOrderQty - ProdOrderQuantity;
-
-
+        ProcdeureCU.QtyOnHand(Rec);
     end;
-
 
     //Import and Export Notes Procedures
     local procedure GetLastLinkID()
@@ -158,11 +134,19 @@ pageextension 68112 "Item Export Xml" extends "Item List"
         RecordLink: Record "Record Link";
         RecordLinkMgt: Codeunit "Record Link Management";
         Item: Record Item;
+        xNotes: Text[2048];
+        Notes: Text[2048];
+        Res: Text[2048];
+
     begin
+
         RowNo := 0;
         ColNo := 0;
         MaxRowNo := 0;
         LineNo := 0;
+        Notes := '';
+        xNotes := '';
+        Res := '';
         TempExcelBuffer.Reset();
         if TempExcelBuffer.FindLast() then
             MaxRowNo := TempExcelBuffer."Row No.";
@@ -177,10 +161,14 @@ pageextension 68112 "Item Export Xml" extends "Item List"
             RecordLink.Type := RecordLink.Type::Note;
             RecordLink.Created := CurrentDateTime;
             RecordLink."User ID" := UserId;
-
             Item.Get(GetValueAtCell(RowNo, 1));
             RecordLink."Record ID" := Item.RecordId;
-            RecordLinkMgt.WriteNote(RecordLink, GetValueAtCell(RowNo, 2));
+
+            xNotes := GetValueAtCell(RowNo, 2);
+            Notes := GetValueAtCell(RowNo, 3);
+            Res := xNotes + Notes;
+
+            RecordLinkMgt.WriteNote(RecordLink, Res);
             RecordLink.Modify();
 
         end;
@@ -227,43 +215,70 @@ pageextension 68112 "Item Export Xml" extends "Item List"
     end;
 
 
-    local procedure ExportNotesToExcel(var Item: Record Item)
+    procedure ExportNotesToExcel(var Item: Record Item)
     var
-        TempExcelBuffer: Record "Excel Buffer" temporary;
+        TempExcelBufferL: Record "Excel Buffer" temporary;
         NotesLbl: Label 'Notes';
         ExcelFileName: Label 'Notes_%1_%2';
         RecordLink: Record "Record Link";
         RecordLinkMgt: Codeunit "Record Link Management";
+        SplitTo: Integer;
+        DivValue: Integer;
+        ModValue: Integer;
+        i: Integer;
+        Note1: Text[2048];
+        Note2: Text[2048];
     begin
-        TempExcelBuffer.Reset();
-        TempExcelBuffer.DeleteAll();
-        TempExcelBuffer.NewRow();
-        TempExcelBuffer.AddColumn(Item.FieldCaption("No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Note), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Created), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-        TempExcelBuffer.AddColumn(RecordLink.FieldCaption("User ID"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBufferL.Reset();
+        TempExcelBufferL.DeleteAll();
+        TempExcelBufferL.NewRow();
+        TempExcelBufferL.AddColumn(Item.FieldCaption("No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        // TempExcelBuffer.AddColumn(RecordLink.FieldCaption(Note), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBufferL.AddColumn(Note2, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+        TempExcelBufferL.AddColumn(Note1, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
         if Item.FindSet() then
             repeat
+                Note1 := '';
+                Note2 := '';
+                Clear(Note1);
+                Clear(Note2);
                 RecordLink.Reset();
                 RecordLink.SetRange("Record ID", Rec.RecordId);
                 RecordLink.SetRange(Type, RecordLink.Type::Note);
                 if RecordLink.FindSet() then
                     repeat
-                        TempExcelBuffer.NewRow();
-                        TempExcelBuffer.AddColumn(Item."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        TempExcelBufferL.NewRow();
+                        TempExcelBufferL.AddColumn(Item."No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                         RecordLink.CalcFields(Note);
-                        TempExcelBuffer.AddColumn(RecordLinkMgt.ReadNote(RecordLink), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                        TempExcelBuffer.AddColumn(RecordLink.Created, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                        TempExcelBuffer.AddColumn(RecordLink."User ID", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+
+
+                        Note1 := RecordLinkMgt.ReadNote(RecordLink);
+
+                        DivValue := StrLen(Note1) div 250;
+                        ModValue := StrLen(Note1) mod 250;
+                        if ModValue = 0 then
+                            SplitTo := DivValue
+                        else
+                            SplitTo := DivValue + 1;
+                        for i := 1 to SplitTo do begin
+                            Note2 := CopyStr(Note1, 1, 250);
+                            if StrLen(Note1) >= 251 then
+                                Note1 := CopyStr(Note1, 251, StrLen(Note1))
+                            else
+                                Note1 := '';
+                            TempExcelBufferL.AddColumn(Note2, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                        end;
+                        TempExcelBufferL.AddColumn(Note1, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                     until RecordLink.Next() = 0;
             until Item.Next() = 0;
-        TempExcelBuffer.CreateNewBook(NotesLbl);
-        TempExcelBuffer.WriteSheet(NotesLbl, CompanyName, UserId);
-        TempExcelBuffer.CloseBook();
-        TempExcelBuffer.SetFriendlyFilename(StrSubstNo(ExcelFileName, CurrentDateTime, UserId));
-        TempExcelBuffer.OpenExcel();
+        TempExcelBufferL.CreateNewBook(NotesLbl);
+        TempExcelBufferL.WriteSheet(NotesLbl, CompanyName, UserId);
+        TempExcelBufferL.CloseBook();
+        TempExcelBufferL.SetFriendlyFilename(StrSubstNo(ExcelFileName, CurrentDateTime, UserId));
+        TempExcelBufferL.OpenExcel();
         Message('Data Exported to Excel Successfully!');
     end;
+
 
     local procedure ExportLinksToExcel(var Item: Record Item)
     var
