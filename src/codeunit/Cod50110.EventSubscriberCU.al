@@ -85,6 +85,22 @@ codeunit 50110 EventSubscriberCU
         IsHandled := true;
     end;
 
+
+
+
+    // [EventSubscriber(ObjectType::Page, Page::"Sales Order", 'OnAfterValidateEvent', 'Sell-to Customer Name', true, true)]
+    // local procedure OnAfterValidateEventHandler(var Rec: Record "Sales Header")
+    // begin
+    //     Rec."Shipment Date" := 0D;
+    //     Rec.Modify();
+    // end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Sales Header", OnInitRecordOnBeforeAssignShipmentDate, '', true, true)]
+    local procedure OnInitRecordOnBeforeAssignShipmentDateHandler(var IsHandled: Boolean)
+    begin
+        IsHandled := true;
+    end; //shipment date null once record created
+
     var
         SalesOrders: Page "Sales Order";
         PurchaseOrders: Page "Purchase Order";
