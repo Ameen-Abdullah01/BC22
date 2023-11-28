@@ -101,6 +101,13 @@ codeunit 50110 EventSubscriberCU
         IsHandled := true;
     end; //shipment date null once record created
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterInsertShipmentHeader', '', true, true)]
+    local procedure OnAfterInsertShipmentHeaderHandler(var SalesShipmentHeader: Record "Sales Shipment Header"; var SalesHeader: Record "Sales Header")
+    begin
+        SalesHeader.Validate("Shipment Date", SalesShipmentHeader."Posting Date");
+        SalesHeader.Modify(true);
+    end;
+
     var
         SalesOrders: Page "Sales Order";
         PurchaseOrders: Page "Purchase Order";
