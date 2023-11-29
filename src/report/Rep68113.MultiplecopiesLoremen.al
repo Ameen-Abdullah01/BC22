@@ -2,8 +2,7 @@ report 68113 "Multiple copies Loremen"
 {
     UsageCategory = ReportsAndAnalysis;
     ApplicationArea = All;
-    DefaultLayout = RDLC;
-    RDLCLayout = 'LoremenMultiCopies.rdl';
+    DefaultRenderingLayout = Loremen1;
 
     dataset
     {
@@ -106,6 +105,19 @@ report 68113 "Multiple copies Loremen"
             }
         }
 
+    }
+    rendering
+    {
+        layout(Loremen1)
+        {
+            Type = RDLC;
+            LayoutFile = 'LoremenMultiCopies.rdl';
+        }
+        layout(Loremen2)
+        {
+            Type = RDLC;
+            LayoutFile = 'LoremenMultiCopies2.rdl';
+        }
     }
 
     var

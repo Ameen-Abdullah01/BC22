@@ -373,7 +373,6 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
                             </Border>
                           </Style>
                         </Rectangle>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -411,11 +410,24 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Border>
             </Style>
           </Tablix>
+          <Subreport Name="Subreport1">
+            <ReportName />
+            <Top>0.56403in</Top>
+            <Left>0.16889in</Left>
+            <Height>0.55653in</Height>
+            <Width>1.77048in</Width>
+            <ZIndex>1</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Subreport>
         </ReportItems>
-        <Height>0.59278in</Height>
+        <Height>1.17611in</Height>
         <Style />
       </Body>
-      <Width>8.14854in</Width>
+      <Width>8.1791in</Width>
       <Page>
         <PageHeader>
           <Height>4.13958in</Height>
@@ -440,7 +452,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Top>1.40639in</Top>
-              <Left>0.13798in</Left>
+              <Left>0.16854in</Left>
               <Height>0.25in</Height>
               <Width>1.49306in</Width>
               <Style>
@@ -458,7 +470,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               <Value>loremen</Value>
               <Sizing>FitProportional</Sizing>
               <Top>0in</Top>
-              <Left>0.13798in</Left>
+              <Left>0.16854in</Left>
               <Height>1.36333in</Height>
               <Width>1.49306in</Width>
               <ZIndex>1</ZIndex>
@@ -488,7 +500,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox3</rd:DefaultName>
               <Top>1.80778in</Top>
-              <Left>0.13798in</Left>
+              <Left>0.16854in</Left>
               <Height>0.25in</Height>
               <Width>1.77083in</Width>
               <ZIndex>2</ZIndex>
@@ -590,7 +602,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox7</rd:DefaultName>
               <Top>2.46056in</Top>
-              <Left>0.13798in</Left>
+              <Left>0.16854in</Left>
               <Height>0.25in</Height>
               <Width>1.09722in</Width>
               <ZIndex>5</ZIndex>
@@ -625,7 +637,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox8</rd:DefaultName>
               <Top>2.46056in</Top>
-              <Left>1.2352in</Left>
+              <Left>1.26576in</Left>
               <Height>0.25in</Height>
               <Width>1.18056in</Width>
               <ZIndex>6</ZIndex>
@@ -660,7 +672,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox9</rd:DefaultName>
               <Top>2.46056in</Top>
-              <Left>2.41576in</Left>
+              <Left>2.44632in</Left>
               <Height>0.25in</Height>
               <Width>1.97222in</Width>
               <ZIndex>7</ZIndex>
@@ -695,7 +707,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox10</rd:DefaultName>
               <Top>2.45208in</Top>
-              <Left>4.41576in</Left>
+              <Left>4.44632in</Left>
               <Height>0.25in</Height>
               <Width>3.73278in</Width>
               <ZIndex>8</ZIndex>
@@ -730,7 +742,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox7</rd:DefaultName>
               <Top>2.72986in</Top>
-              <Left>0.1352in</Left>
+              <Left>0.16576in</Left>
               <Height>0.25in</Height>
               <Width>1.09722in</Width>
               <ZIndex>9</ZIndex>
@@ -764,7 +776,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox8</rd:DefaultName>
               <Top>2.72986in</Top>
-              <Left>1.2352in</Left>
+              <Left>1.26576in</Left>
               <Height>0.25in</Height>
               <Width>1.18056in</Width>
               <ZIndex>10</ZIndex>
@@ -818,7 +830,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox9</rd:DefaultName>
               <Top>2.72986in</Top>
-              <Left>2.41298in</Left>
+              <Left>2.44354in</Left>
               <Height>0.25in</Height>
               <Width>1.97222in</Width>
               <ZIndex>11</ZIndex>
@@ -872,7 +884,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox10</rd:DefaultName>
               <Top>2.72708in</Top>
-              <Left>4.3852in</Left>
+              <Left>4.41576in</Left>
               <Height>0.25in</Height>
               <Width>3.74945in</Width>
               <ZIndex>12</ZIndex>
@@ -1526,7 +1538,7 @@ Chr(177) + Cstr(Fields!TotalVat.Value) , 1)</Hidden>
               </Paragraphs>
               <rd:DefaultName>Textbox6</rd:DefaultName>
               <Top>2.07167in</Top>
-              <Left>0.13798in</Left>
+              <Left>0.16854in</Left>
               <Height>0.25in</Height>
               <Width>2.08333in</Width>
               <ZIndex>27</ZIndex>
