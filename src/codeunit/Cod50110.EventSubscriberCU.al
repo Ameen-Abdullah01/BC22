@@ -108,6 +108,23 @@ codeunit 50110 EventSubscriberCU
         SalesHeader.Modify(true);
     end;
 
+    // [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeInitQtyToReceive', '', true, true)]
+    // local procedure OnBeforeInitQtyToReceiveHandler(var PurchaseLine: Record "Purchase Line")
+    // begin
+    //     PurchaseLine.Validate("Qty. to Receive", 0);
+    //     PurchaseLine.Modify(true)
+
+    // end;
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnBeforeInitQtyToReceive', '', false, false)] //AGT_AA_122723++
+    local procedure OnBeforeInitQtyToReceive(var PurchaseLine: Record "Purchase Line"; var IsHandled: Boolean)
+    begin
+
+        PurchaseLine.Validate("Qty. to Receive", 0);
+        IsHandled := true;
+
+    end; //AGT_AA_122723--
+
+
     var
         SalesOrders: Page "Sales Order";
         PurchaseOrders: Page "Purchase Order";
