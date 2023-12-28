@@ -119,7 +119,7 @@ codeunit 50110 EventSubscriberCU
     local procedure OnBeforeInitQtyToReceive(var PurchaseLine: Record "Purchase Line"; var IsHandled: Boolean)
     begin
 
-        PurchaseLine.Validate("Qty. to Receive", 0);
+        PurchaseLine."Qty. to Receive" := 0;
         IsHandled := true;
 
     end; //AGT_AA_122723--
