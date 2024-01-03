@@ -1,6 +1,7 @@
 page 68100 PracticePage
 {
     PageType = Card;
+    Caption = 'Test Page';
     ApplicationArea = All;
     UsageCategory = Administration;
     SourceTable = Practice;
@@ -24,28 +25,16 @@ page 68100 PracticePage
     {
         area(Processing)
         {
-            action(ActionName)
+            action(RunCodeunit)
             {
                 ApplicationArea = All;
+                Caption = 'Test Codeunit';
 
                 trigger OnAction()
                 begin
-
+                    Codeunit.Run(68113);
                 end;
             }
         }
     }
-    trigger OnOpenPage()
-
-    begin
-
-
-    end;
-
-
-
-
-    var
-        cust: Record Customer;
-        prac: Record Practice;
 }
